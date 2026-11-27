@@ -37,7 +37,7 @@ The system uses ESP32 devices, sensors, a camera and a web-based dashboard to mo
 ```text
 WareGuard/
 │
-├── mvp/
+├── env/
 ├── recordings/
 ├── static/
 │   ├── PHOTOS/
