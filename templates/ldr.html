@@ -1,0 +1,180 @@
+
+
+
+{% extends 'base.html' %}
+
+{% block content %}
+<link rel="stylesheet" href="/static/dashboard.css">
+<link rel="icon" href="/static/PHOTOS/hawk-eagle-logo-white-black_677805-1179.avif">
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>LDR Dashboard</title>
+
+    <link rel="stylesheet" href="/static/dashboard.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+<div class="navbar">
+    🌙 LDR Light Monitor
+</div>
+
+<div class="container">
+
+    <div class="grid">
+
+        <!-- Current Value -->
+        <div class="card">
+
+            <h3>Current Light Level</h3>
+
+            <div id="value" class="value">
+                --
+            </div>
+
+        </div>
+
+        <!-- Graph -->
+        <div class="card">
+
+            <canvas id="chart"></canvas>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+let ctx =
+    document.getElementById('chart').getContext('2d');
+
+let chart = new Chart(ctx, {
+
+    type: 'line',
+
+    data: {
+
+        labels: [],
+
+        datasets: [{
+
+            label: 'LDR',
+
+            data: [],
+
+            borderColor: '#38bdf8',
+
+            backgroundColor: 'rgba(56,189,248,0.2)',
+
+            fill: true,
+
+            tension: 0.4
+        }]
+    },
+
+    options: {
+
+        responsive: true,
+
+        plugins: {
+
+            legend: {
+
+                labels: {
+                    color: 'white'
+                }
+            }
+        },
+
+        scales: {
+
+            x: {
+
+                ticks: {
+                    color: 'white'
+                },
+
+                title: {
+
+                    display: true,
+
+                    text: 'Timestamp',
+
+                    color: 'white'
+                }
+            },
+
+            y: {
+
+                ticks: {
+                    color: 'white'
+                },
+
+                title: {
+
+                    display: true,
+
+                    text: 'Light Level (ADC)',
+
+                    color: 'white'
+                }
+            }
+        }
+    }
+});
+
+async function loadData(){
+
+    let res =
+        await fetch('/api/live/LDR');
+
+    let data =
+        await res.json();
+
+    // Get values
+    let values =
+        data.map(x => x[0]);
+
+    // Get timestamps
+    let timestamps =
+        data.map(x => {
+
+            let time =
+                new Date(x[1]);
+
+            return time.toLocaleTimeString();
+        });
+
+    // Update graph
+    chart.data.labels = timestamps;
+
+    chart.data.datasets[0].data = values;
+
+    chart.update();
+
+    // Update current value
+    if(values.length > 0){
+
+        document.getElementById('value').innerText =
+            values[values.length - 1];
+    }
+}
+
+// Initial Load
+loadData();
+
+// Refresh every 2 seconds
+setInterval(loadData, 2000);
+
+</script>
+
+</body>
+</html>
+
+{% endblock %}

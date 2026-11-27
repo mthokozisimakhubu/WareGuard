@@ -1,0 +1,245 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<link rel="stylesheet" href="/static/dashboard.css">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<div class="navbar">
+    🌡️ DHT22 Warehouse Condition Monitor
+</div>
+
+<!-- Live cards -->
+<div class="sensor-container">
+
+    <div class="sensor-card">
+        <h3>Temperature</h3>
+        <div id="tempValue">-- °C</div>
+    </div>
+
+    <div class="sensor-card">
+        <h3>Humidity</h3>
+        <div id="humValue">-- %</div>
+    </div>
+
+</div>
+
+
+<div class="chart-container">
+    <h2>Temperature vs Humidity Analysis</h2>
+    <canvas id="chart"></canvas>
+</div>
+
+<style>
+
+.sensor-container{
+    width:90%;
+    margin:auto;
+    display:flex;
+    justify-content:center;
+    gap:25px;
+    margin-top:20px;
+}
+
+.sensor-card{
+    width:220px;
+    background:white;
+    padding:20px;
+    border-radius:15px;
+    text-align:center;
+    box-shadow:0 4px 15px rgba(0,0,0,0.1);
+}
+
+.sensor-card h3{
+    color:#666;
+    margin-bottom:10px;
+}
+
+.sensor-card div{
+    font-size:30px;
+    font-weight:bold;
+}
+
+.chart-container{
+    width:90%;
+    height:450px;
+    margin:auto;
+    margin-top:30px;
+    background:white;
+    padding:20px;
+    border-radius:20px;
+    box-shadow:0 4px 15px rgba(0,0,0,0.1);
+}
+
+.chart-container h2{
+    text-align:center;
+    margin-bottom:20px;
+    color:#444;
+}
+
+</style>
+
+
+<script>
+
+let ctx=document.getElementById('chart').getContext('2d');
+
+let chart=new Chart(ctx,{
+
+type:'line',
+
+data:{
+labels:[],
+
+datasets:[
+
+{
+label:"Temperature (°C)",
+
+data:[],
+
+borderColor:"#ff4d4d",
+
+backgroundColor:"rgba(255,77,77,0.1)",
+
+borderWidth:3,
+
+tension:0.4,
+
+pointRadius:3,
+
+fill:true
+
+},
+
+{
+label:"Humidity (%)",
+
+data:[],
+
+borderColor:"#3399ff",
+
+backgroundColor:"rgba(51,153,255,0.1)",
+
+borderWidth:3,
+
+tension:0.4,
+
+pointRadius:3,
+
+fill:true
+
+}
+
+]
+
+},
+
+options:{
+
+responsive:true,
+
+maintainAspectRatio:false,
+
+interaction:{
+mode:'index',
+intersect:false
+},
+
+plugins:{
+
+legend:{
+position:'top'
+},
+
+title:{
+display:true,
+text:'Real-Time Warehouse Environmental Monitoring'
+}
+
+},
+
+scales:{
+
+x:{
+title:{
+display:true,
+text:'Time'
+},
+grid:{
+display:false
+}
+},
+
+y:{
+title:{
+display:true,
+text:'Sensor Readings'
+},
+beginAtZero:true
+}
+
+},
+
+animation:{
+duration:1000
+}
+
+}
+
+});
+
+
+
+async function load(){
+
+let t=await fetch('/api/live/Temperature');
+let h=await fetch('/api/live/Humidity');
+
+let tempData=await t.json();
+let humData=await h.json();
+
+let temp=tempData.map(x=>x[0]);
+let hum=humData.map(x=>x[0]);
+
+let len=Math.min(temp.length,hum.length);
+
+
+/* professional timestamps */
+
+chart.data.labels=
+Array.from(
+{length:len},
+()=>new Date().toLocaleTimeString()
+);
+
+
+chart.data.datasets[0].data=temp.slice(0,len);
+
+chart.data.datasets[1].data=hum.slice(0,len);
+
+
+/* live cards */
+
+if(temp.length>0)
+document.getElementById("tempValue").innerHTML=
+temp[temp.length-1]+" °C";
+
+
+if(hum.length>0)
+document.getElementById("humValue").innerHTML=
+hum[hum.length-1]+" %";
+
+
+chart.update();
+
+}
+
+
+setInterval(load,2000);
+
+load();
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,448 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap');
+
+/* universal selector style */
+* {
+    box-sizing: border-box;
+    padding: 0px;
+    margin: 0px;
+    font-family: 'Roboto', sans-serif;
+}
+
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: sans-serif;
+}
+
+.body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: url(/static/PHOTOS/R.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+
+.box {
+    padding: 20px 30px;
+    width: 300px;
+    height: 400px;
+    backdrop-filter: blur(20px);
+    border-radius: 5px;
+    background: rgba(49, 49, 49, .2);
+    border: solid 1px rgba(225, 255, 255, .5);
+}
+
+.box .contactform {
+    padding: 10px 20px;
+    font-size: 14px;
+    color: #fff;
+}
+
+.box h1 {
+    color: rgb(225, 230, 230);
+    text-align: center;
+}
+
+form {
+    margin-top: 50px;
+    margin-left: 15px;
+}
+
+.box .contactform input {
+    padding: 10px 20px;
+    border: none;
+    outline: none;
+    background: none;
+    border-bottom: 1px solid #111010;
+    color: #fff;
+}
+
+#submit {
+    padding: 10px 20px;
+    color: #fff;
+    outline: none;
+    border: none;
+    background: #253251;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+/* HOME PAGE STYLES !!!!! */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap');
+
+/* universal selector style */
+* {
+    box-sizing: border-box;
+    padding: 0px;
+    margin: 0px;
+    font-family: 'Roboto', sans-serif;
+}
+
+
+body {
+    background-image: url(/static/PHOTOS/R.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    text-decoration: none;
+    box-sizing: border-box;
+    padding: 0px;
+    margin: 0px;
+    font-family: 'Roboto', sans-serif;
+    height: 100vh;
+}
+
+/* banner wrap style */
+.banner-wrap {
+    background-image: radial-gradient(54.97% 272.54% at 27.36%-134.72%, rgba(112, 145, 234, 0.98)0, rgba(0, 0, 0, 0.98)100%);
+    background-size: cover;
+    padding: 7px 12px;
+    position: sticky;
+    top: 0;
+    z-index: 999;
+    border-bottom: 1px solid white;
+    border-top: 1px solid white;
+}
+
+
+.tooltip {
+    position: relative;
+    display: inline;
+}
+
+.tooltip-text {
+    position: absolute;
+    left: 0;
+    top: 100%;
+    font-size: 0.78rem;
+    background-color: #323232;
+    color: white;
+    opacity: 0.8;
+    padding: 5px;
+    white-space: nowrap;
+    border-radius: 5px;
+    visibility: hidden;
+    z-index: 1;
+}
+
+.tooltip:hover .tooltip-text {
+    visibility: visible;
+}
+
+/* ad class style */
+.ad {
+    /* background-image: radial-gradient(54.97% 272.54% at 27.36%-134.72%, rgba(112, 145, 234, 0.98)0, rgba(0, 0, 0, 0.98)100%); */
+    color: white;
+    display: flex;
+    /* justify-content: center; */
+    justify-content: space-between;
+    align-items: center;
+    padding: 14PX 24PX 14PX 24px;
+}
+
+.text1 img {
+    width: 50px;
+    cursor: pointer;
+    border-radius: 50%;
+    border: 2px solid white;
+}
+
+.ad .text2 {
+    color: white;
+    font-size: 27px;
+    font-weight: 1000;
+    margin-right: 10px;
+    text-align: center;
+    text-decoration: none;
+}
+
+.link img {
+    width: 50px;
+    cursor: pointer;
+    border-radius: 50%;
+    border: 2px solid white;
+}
+
+
+nav {
+
+    display: flex;
+    align-items: center;
+    border: 100px;
+    display: flex;
+    justify-content: space-between;
+}
+
+/* nav-item class style */
+.nav-item {
+    padding: 4px 8px;
+    /* margin: 0px 8px; */
+    color: white;
+    text-decoration: none;
+}
+
+.nav-item img {
+    width: 50px;
+    cursor: pointer;
+    border-radius: 50%;
+    border: 2px solid white;
+    padding: 5px 5px;
+    margin: 5px 10px;
+}
+
+.nav-item:hover {
+    background-color: #0000000D;
+    cursor: pointer;
+}
+
+a items {
+    color: black;
+    text-decoration: none;
+}
+
+a banner-wrap {
+    color: white;
+    text-decoration: none;
+}
+
+.heading-section {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 70vh;
+    color: white;
+}
+
+/* Button Container */
+.btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 0 16px;
+    gap: 20px;
+    /* Better than margins for spacing */
+}
+
+/* Button Wrappers */
+.btn-left,
+.btn-right {
+    /* Remove width/height from here - let the anchor tags control size */
+    margin: 10px;
+}
+
+/* Base Button Styles */
+.btn-left a,
+.btn-right a {
+    display: inline-flex;
+    /* Changed to flex for better centering */
+    align-items: center;
+    justify-content: center;
+    width: 200px;
+    height: 50px;
+    padding: 0 24px;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+/* Light Button */
+.btn-left a.light {
+    background-color: white;
+    color: rgb(39, 54, 86);
+    border: 2px solid rgb(39, 54, 86) !important;
+}
+
+
+/* Dark Button */
+.btn-right a.dark {
+    background-color: rgb(39, 54, 86);
+    color: white;
+    border: 2px solid white;
+}
+
+.btn-right a.dark:hover {
+    background-color: rgb(29, 44, 76);
+}
+
+.tds-site-logo-link {
+    align-items: center;
+    display: inline-flex;
+}
+
+.logo img {
+    width: 100px;
+}
+
+
+
+
+
+.footer {
+    background-color: rgb(30 40 64);
+    border-top: 1px solid white;
+
+}
+
+.footer-links {
+    list-style: none;
+    columns: 4;
+    padding: none;
+
+
+
+}
+
+.footer ul li {
+    transition: all 0.2s ease-in-out;
+}
+
+
+.footer-links li {
+
+    font-size: 13px;
+    line-height: 2;
+}
+
+.footer-items {
+    margin: 0 47px;
+    padding: 70px 45px;
+
+
+
+
+}
+
+.footer ul li,
+.questions-title {
+    color: white;
+    text-decoration: none;
+    transition: all 0.9s ease-in-out;
+
+
+}
+
+.footer ul li:hover {
+    cursor: pointer;
+    text-decoration: underline;
+    transition: all 0.2s ease-in-out;
+    /* height: 20px;
+} */
+}
+
+.questions-title:hover {
+    text-decoration: underline;
+}
+
+.footer-top .questions-title {
+    margin-bottom: 30px;
+    text-decoration: none;
+
+
+}
+
+.material-icons {
+    color: white;
+
+
+
+}
+
+.language {
+    color: white;
+    height: 53px;
+    width: 142px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 0 10px;
+    margin-top: 10px;
+    border: 1px solid white;
+    border-radius: 3px;
+
+
+
+}
+
+.language select {
+    margin-left: 10px;
+    width: 100%;
+    border: none;
+    appearance: none;
+    color: white;
+    ;
+
+
+
+
+
+}
+
+.material-symbols-outlined {
+    cursor: pointer;
+
+
+
+
+}
+
+.link.hawk {
+    text-align: center;
+}
+
+.link.hawk img {
+    max-width: 100%;
+    height: auto;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*  */

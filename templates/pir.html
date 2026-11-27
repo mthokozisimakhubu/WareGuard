@@ -1,0 +1,284 @@
+
+
+{% extends 'base.html' %}
+{% block content %}
+
+<link rel="stylesheet" href="/static/dashboard.css">
+<link rel="icon" href="/static/PHOTOS/hawk-eagle-logo-white-black_677805-1179.avif">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<div class="navbar">
+  🚨 PIR Motion Sensor Dashboard
+</div>
+
+<div class="container">
+
+  <!-- STATUS CARD -->
+  <div class="card">
+
+    <h3>Status</h3>
+
+    <div id="status" class="value">
+      Waiting...
+    </div>
+
+    <p id="timestamp"
+       style="color:#64748b; font-size:13px; margin-top:8px;">
+       Waiting for data...
+    </p>
+
+  </div>
+
+  <!-- GRAPH CARD -->
+  <div class="card">
+
+    <h3>Motion Detection vs Time</h3>
+
+    <div style="width:100%; height:350px;">
+      <canvas id="pirChart"></canvas>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+
+// =========================
+// CHART
+// =========================
+
+const ctx = document.getElementById('pirChart').getContext('2d');
+
+const chart = new Chart(ctx, {
+
+  type: 'line',
+
+  data: {
+
+    labels: [],
+
+    datasets: [{
+
+      label: 'Motion Detection',
+
+      data: [],
+
+      borderWidth: 4,
+
+      pointRadius: 5,
+
+      pointHoverRadius: 7,
+
+      tension: 0,
+
+      stepped: true,
+
+      fill: true,
+
+      // Entire graph changes color
+      borderColor: '#38bdf8',
+
+      backgroundColor: 'rgba(56,189,248,0.15)',
+
+      pointBackgroundColor: '#38bdf8',
+
+      pointBorderColor: '#38bdf8'
+    }]
+  },
+
+  options: {
+
+    responsive: true,
+
+    maintainAspectRatio: false,
+
+    animation: {
+      duration: 300
+    },
+
+    plugins: {
+
+      title: {
+
+        display: true,
+
+        text: 'Motion Detection vs Time',
+
+        color: '#e2e8f0',
+
+        font: {
+          size: 16,
+          weight: 'bold'
+        },
+
+        padding: {
+          bottom: 20
+        }
+      },
+
+      legend: {
+
+        labels: {
+          color: '#e2e8f0'
+        }
+      }
+    },
+
+    scales: {
+
+      x: {
+
+        title: {
+
+          display: true,
+
+          text: 'Time',
+
+          color: '#94a3b8'
+        },
+
+        ticks: {
+
+          color: '#94a3b8',
+
+          maxTicksLimit: 10
+        },
+
+        grid: {
+          color: 'rgba(100,116,139,0.2)'
+        }
+      },
+
+      y: {
+
+        min: 0,
+
+        max: 1,
+
+        title: {
+
+          display: true,
+
+          text: 'Motion State',
+
+          color: '#94a3b8'
+        },
+
+        ticks: {
+
+          stepSize: 1,
+
+          color: '#94a3b8',
+
+          callback: function(value) {
+
+            if (value == 1) {
+              return 'Motion';
+            }
+
+            return 'No Motion';
+          }
+        },
+
+        grid: {
+          color: 'rgba(100,116,139,0.2)'
+        }
+      }
+    }
+  }
+});
+
+
+// =========================
+// LOAD PIR DATA
+// =========================
+
+async function loadPIR() {
+
+  try {
+
+    const response = await fetch('/api/live/PIR');
+
+    const data = await response.json();
+
+    if (!data.length) return;
+
+    // =========================
+    // STATUS
+    // =========================
+
+    const latest = data[data.length - 1];
+
+    const value = latest[0];
+
+    const time = latest[1];
+
+    const status = document.getElementById('status');
+
+    if (value == 1) {
+
+      status.innerText = 'MOTION DETECTED!';
+
+      status.style.color = '#ef4444';
+
+      // Entire graph turns RED
+      chart.data.datasets[0].borderColor = '#ef4444';
+      chart.data.datasets[0].backgroundColor = 'rgba(239,68,68,0.15)';
+      chart.data.datasets[0].pointBackgroundColor = '#ef4444';
+      chart.data.datasets[0].pointBorderColor = '#ef4444';
+
+    } else {
+
+      status.innerText = 'No Motion';
+
+      status.style.color = '#38bdf8';
+
+      // Entire graph turns BLUE
+      chart.data.datasets[0].borderColor = '#38bdf8';
+      chart.data.datasets[0].backgroundColor = 'rgba(56,189,248,0.15)';
+      chart.data.datasets[0].pointBackgroundColor = '#38bdf8';
+      chart.data.datasets[0].pointBorderColor = '#38bdf8';
+    }
+
+    document.getElementById('timestamp').innerText =
+      'Last update: ' + time;
+
+
+    // =========================
+    // GRAPH
+    // =========================
+
+    const labels = data.map(row =>
+      row[1].slice(11, 19)
+    );
+
+    const values = data.map(row =>
+      row[0]
+    );
+
+    chart.data.labels = labels;
+
+    chart.data.datasets[0].data = values;
+
+    chart.update('none');
+
+  } catch (error) {
+
+    console.error('PIR Fetch Error:', error);
+  }
+}
+
+
+// =========================
+// START
+// =========================
+
+loadPIR();
+
+setInterval(loadPIR, 2000);
+
+</script>
+
+{% endblock %}

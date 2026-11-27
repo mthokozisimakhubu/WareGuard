@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sensor Dashboard</title>
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <style>
+    /* Banner Styles */
+    .banner-wrap {
+      background-image: radial-gradient(54.97% 272.54% at 27.36%-134.72%, rgba(112, 145, 234, 0.98)0, rgba(0, 0, 0, 0.98)100%);
+      background-size: cover;
+      padding: 7px 12px;
+      position: sticky;
+      top: 0;
+      z-index: 999;
+      border-bottom: 1px solid white;
+      border-top: 1px solid white;
+    }
+
+    .ad {
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 24px;
+    }
+
+    .text1 img,
+    .link img {
+      width: 50px;
+      cursor: pointer;
+      border-radius: 50%;
+      border: 2px solid white;
+    }
+
+    .ad .text2 {
+      color: white;
+      font-size: 27px;
+      font-weight: 1000;
+      margin-right: 10px;
+      text-align: center;
+    }
+
+    /* Navigation Styles */
+    nav.navbar {
+      background-color: transparent !important;
+      justify-content: center;
+      border: none;
+    }
+
+    .navbar-nav {
+      background-color: rgba(0, 0, 0, 0.5);
+      border-radius: 50px;
+      padding: 5px;
+    }
+
+    .material-symbols-outlined {
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border-radius: 50%;
+      border: 2px solid white;
+      padding: 5px;
+      margin: 5px 10px;
+      font-size: 24px;
+      color: white;
+      transition: all 0.3s ease;
+    }
+
+    .material-symbols-outlined:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .nav-link.text-danger .material-symbols-outlined {
+      color: #dc3545;
+      border-color: #dc3545;
+    }
+
+    .nav-link.text-info .material-symbols-outlined {
+      color: #0dcaf0;
+      border-color: #0dcaf0;
+    }
+
+    .nav-link.active .material-symbols-outlined {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+  </style>
+</head>
+
+<body class="bg-light">
+  <!-- Banner Section -->
+  <div class="banner-wrap">
+    <div class="ad">
+      <div class="text1">
+        <p><img src="/static/PHOTOS/database_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.png" alt="Database Icon"></p>
+      </div>
+      <div class="text2">
+        <p><b>Ware Guard</b></p>
+      </div>
+      <div class="link">
+        <p><img src="/static/PHOTOS/hawk-eagle-logo-white-black_677805-1179.avif" alt="Hawk Logo"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Centered Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container-fluid justify-content-center">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
+        aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-center" id="navbarNavAltMarkup">
+        <div class="navbar-nav">
+          <a class="nav-link active" aria-current="page" href="/" title="Home">
+            <span class="material-symbols-outlined">home</span>
+          </a>
+          <a class="nav-link" href="/view_sensors" title="View Sensors">
+            <span class="material-symbols-outlined">dashboard</span>
+          </a>
+          <a class="nav-link" href="#" title="About Us">
+            <span class="material-symbols-outlined">info</span>
+          </a>
+
+          {% if is_authenticated %}
+          <a class="nav-link text-danger" href="/logout" title="Logout">
+            <span class="material-symbols-outlined">logout</span>
+          </a>
+          {% else %}
+          <a class="nav-link text-info" href="/signin" title="Login">
+            <span class="material-symbols-outlined">login</span>
+          </a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  {% block content %}
+
+  {% endblock %}
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+    crossorigin="anonymous"></script>
+  <script>
+    //function to reload every 2.4 seconds using milli
+    // 
+  </script>
+</body>
+
+</html>

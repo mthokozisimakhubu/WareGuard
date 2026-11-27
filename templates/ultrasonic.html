@@ -1,0 +1,342 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<link rel="stylesheet" href="/static/dashboard.css">
+<link rel="icon" href="/static/PHOTOS/hawk-eagle-logo-white-black_677805-1179.avif">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<div class="navbar">
+📏 Ultrasonic Warehouse Monitor
+</div>
+
+
+<div class="sensor-container">
+
+<div class="sensor-card">
+<h3>Distance</h3>
+
+<div id="distanceValue">
+-- cm
+</div>
+
+</div>
+
+
+<div class="sensor-card">
+
+<h3>Inventory Status</h3>
+
+<div id="stockLevel">
+
+Loading...
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<div class="chart-container">
+
+<h2>Distance vs Time</h2>
+
+<canvas id="chart"></canvas>
+
+</div>
+
+
+
+<style>
+
+.sensor-container{
+
+width:90%;
+margin:auto;
+
+display:flex;
+
+justify-content:center;
+
+gap:25px;
+
+margin-top:20px;
+
+}
+
+
+.sensor-card{
+
+width:230px;
+
+padding:20px;
+
+background:white;
+
+border-radius:15px;
+
+text-align:center;
+
+box-shadow:0 4px 15px rgba(0,0,0,.1);
+
+}
+
+.sensor-card h3{
+
+color:#666;
+
+}
+
+.sensor-card div{
+
+font-size:30px;
+
+font-weight:bold;
+
+margin-top:10px;
+
+}
+
+
+.chart-container{
+
+width:90%;
+height:450px;
+
+margin:auto;
+
+margin-top:30px;
+
+background:white;
+
+padding:20px;
+
+border-radius:20px;
+
+box-shadow:0 4px 15px rgba(0,0,0,.1);
+
+}
+
+.chart-container h2{
+
+text-align:center;
+
+color:#444;
+
+margin-bottom:20px;
+
+}
+
+</style>
+
+
+
+<script>
+
+let ctx=
+document
+.getElementById("chart")
+.getContext("2d");
+
+
+let chart=
+new Chart(ctx,{
+
+type:'line',
+
+data:{
+
+labels:[],
+
+datasets:[{
+
+label:'Distance (cm)',
+
+data:[],
+
+borderColor:"#00b894",
+
+backgroundColor:
+"rgba(0,184,148,.15)",
+
+borderWidth:3,
+
+fill:true,
+
+pointRadius:3,
+
+tension:.4
+
+}]
+
+},
+
+options:{
+
+responsive:true,
+
+maintainAspectRatio:false,
+
+interaction:{
+mode:'index',
+intersect:false
+},
+
+plugins:{
+
+legend:{
+position:'top'
+},
+
+title:{
+
+display:true,
+
+text:
+'Real-Time Distance Monitoring'
+
+}
+
+},
+
+scales:{
+
+x:{
+
+title:{
+
+display:true,
+
+text:'Time'
+
+},
+
+grid:{
+display:false
+}
+
+},
+
+y:{
+
+beginAtZero:true,
+
+title:{
+
+display:true,
+
+text:'Distance (cm)'
+
+}
+
+}
+
+}
+
+}
+
+});
+
+
+
+async function load(){
+
+let r=
+await fetch(
+'/api/live/Ultrasonic'
+);
+
+let data=
+await r.json();
+
+
+let distance=
+data.map(
+x=>x[0]
+);
+
+
+
+chart.data.labels=
+data.map(x=>{
+
+let d=
+new Date(x[1]);
+
+return d.toLocaleTimeString();
+
+});
+
+
+
+chart.data.datasets[0].data=
+distance;
+
+
+
+if(distance.length>0){
+
+let latest=
+distance[
+distance.length-1
+];
+
+
+document
+.getElementById(
+"distanceValue"
+)
+.innerHTML=
+latest+" cm";
+
+
+
+let status="";
+
+if(latest<=5){
+
+status="Full";
+
+}
+
+else if(
+latest<=15
+){
+
+status="Medium";
+
+}
+
+else{
+
+status="Low";
+
+}
+
+
+document
+.getElementById(
+"stockLevel"
+)
+.innerHTML=
+status;
+
+}
+
+
+chart.update();
+
+}
+
+setInterval(
+load,
+2000
+);
+
+load();
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,339 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<link rel="stylesheet" href="/static/dashboard.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<div class="navbar">
+   🏭 Smart Warehouse Admin Dashboard
+</div>
+
+<div class="dashboard">
+
+    <!-- CAMERA -->
+    <div class="navbar">📷 Live Surveillance</div>
+
+    <div class="container">
+        <div class="card">
+            <img src="http://{{ cam_ip }}:81/stream" width="500" height="300" alt="camera stream">
+        </div>
+    </div>
+
+    <!-- STATUS -->
+    <div id="status" style="margin:10px;font-weight:bold;"></div>
+    <div id="timestamp" style="margin:5px;color:gray;"></div>
+
+    <!-- LIVE SENSOR CARDS -->
+    <div class="sensor-grid">
+
+        <div class="card">
+            <h3>🌡 Temperature</h3>
+            <div id="temp">-- °C</div>
+        </div>
+
+        <div class="card">
+            <h3>💧 Humidity</h3>
+            <div id="hum">-- %</div>
+        </div>
+
+        <div class="card">
+            <h3>🌙 LDR</h3>
+            <div id="ldr">--</div>
+        </div>
+
+        <div class="card">
+            <h3>🚨 Motion</h3>
+            <div id="pir">--</div>
+        </div>
+
+        <div class="card">
+            <h3>📏 Distance</h3>
+            <div id="ultra">-- cm</div>
+        </div>
+
+    </div>
+
+    <!-- CHARTS -->
+    <div class="chart-grid">
+
+        <div class="card chart-box">
+            <h3>DHT22</h3>
+            <canvas id="dhtChart"></canvas>
+        </div>
+
+        <div class="card chart-box">
+            <h3>LDR Analysis</h3>
+            <canvas id="ldrChart"></canvas>
+        </div>
+
+        <div class="card chart-box">
+            <h3>PIR Motion</h3>
+            <canvas id="pirChart"></canvas>
+        </div>
+
+        <div class="card chart-box">
+            <h3>Ultrasonic</h3>
+            <canvas id="ultraChart"></canvas>
+        </div>
+
+    </div>
+
+</div>
+
+<style>
+
+.dashboard{
+width:97%;
+margin:auto;
+padding-bottom:10px;
+}
+
+.sensor-grid{
+display:grid;
+grid-template-columns:repeat(5,1fr);
+gap:10px;
+margin-top:12px;
+}
+
+.chart-grid{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:10px;
+margin-top:15px;
+}
+
+.card{
+background:white;
+padding:10px;
+border-radius:15px;
+box-shadow:0 3px 8px rgba(0,0,0,0.1);
+text-align:center;
+}
+
+.chart-box{
+height:210px;
+}
+
+canvas{
+width:100%!important;
+height:120px!important;
+}
+
+.card h3{
+margin-bottom:8px;
+color:#555;
+font-size:14px;
+}
+
+.card div{
+font-size:20px;
+font-weight:bold;
+}
+
+@media(max-width:900px){
+.sensor-grid{grid-template-columns:repeat(2,1fr);}
+.chart-grid{grid-template-columns:1fr;}
+}
+
+</style>
+
+<script>
+
+///////////////////////
+// CHARTS
+///////////////////////
+
+const dhtChart = new Chart(
+document.getElementById('dhtChart'),
+{
+    type: 'line',
+    data: {
+        labels: [],
+        datasets: [
+            {
+                label: 'Temp',
+                data: [],
+                borderColor: 'red',
+                tension: 0.4
+            },
+            {
+                label: 'Humidity',
+                data: [],
+                borderColor: 'blue',
+                tension: 0.4
+            }
+        ]
+    },
+    options: { responsive: true, maintainAspectRatio: false }
+}
+);
+
+const ldrChart = new Chart(
+document.getElementById('ldrChart'),
+{
+    type: 'line',
+    data: {
+        labels: [],
+        datasets: [{
+            label: 'LDR',
+            data: [],
+            borderColor: '#38bdf8',
+            tension: 0.4,
+            fill: true
+        }]
+    },
+    options: { responsive: true, maintainAspectRatio: false }
+}
+);
+
+const pirChart = new Chart(
+document.getElementById('pirChart'),
+{
+    type: 'line',
+    data: {
+        labels: [],
+        datasets: [{
+            label: 'Motion',
+            data: [],
+            borderColor: '#38bdf8',
+            backgroundColor: 'rgba(56,189,248,0.15)',
+            stepped: true,
+            tension: 0,
+            fill: true
+        }]
+    },
+    options: { responsive: true, maintainAspectRatio: false }
+}
+);
+
+const ultraChart = new Chart(
+document.getElementById('ultraChart'),
+{
+    type: 'line',
+    data: {
+        labels: [],
+        datasets: [{
+            label: 'Distance',
+            data: [],
+            borderColor: 'green',
+            tension: 0.4
+        }]
+    },
+    options: { responsive: true, maintainAspectRatio: false }
+}
+);
+
+///////////////////////
+// DASHBOARD LOOP
+///////////////////////
+
+async function loadDashboard() {
+
+try {
+
+let t = await fetch('/api/live/Temperature');
+let h = await fetch('/api/live/Humidity');
+let l = await fetch('/api/live/LDR');
+let p = await fetch('/api/live/PIR');
+let u = await fetch('/api/live/Ultrasonic');
+
+let temp = await t.json();
+let hum = await h.json();
+let ldr = await l.json();
+let pir = await p.json();
+let ultra = await u.json();
+
+let tempValues = temp.map(x => x[0]);
+let humValues = hum.map(x => x[0]);
+let ldrValues = ldr.map(x => x[0]);
+let pirValues = pir.map(x => x[0]);
+let ultraValues = ultra.map(x => x[0]);
+
+let labels = temp.map(() => new Date().toLocaleTimeString());
+
+///////////////////////
+// PIR COLOR LOGIC (FIXED)
+///////////////////////
+
+let latestPir = pirValues.length ? pirValues.at(-1) : 0;
+
+const pirText = document.getElementById('pir');
+const status = document.getElementById('status');
+
+if (latestPir == 1) {
+
+    // RED STATE
+    pirText.innerHTML = "Motion Detected";
+    pirText.style.color = "#ef4444";
+
+    status.innerText = "MOTION DETECTED!";
+    status.style.color = "#ef4444";
+
+    pirChart.data.datasets[0].borderColor = "#ef4444";
+    pirChart.data.datasets[0].backgroundColor = "rgba(239,68,68,0.15)";
+
+} else {
+
+    // BLUE STATE
+    pirText.innerHTML = "No Motion";
+    pirText.style.color = "#38bdf8";
+
+    status.innerText = "No Motion";
+    status.style.color = "#38bdf8";
+
+    pirChart.data.datasets[0].borderColor = "#38bdf8";
+    pirChart.data.datasets[0].backgroundColor = "rgba(56,189,248,0.15)";
+}
+
+document.getElementById('timestamp').innerText =
+"Last update: " + new Date().toLocaleTimeString();
+
+///////////////////////
+// LIVE CARDS
+///////////////////////
+
+document.getElementById('temp').innerHTML =
+tempValues.at(-1) + " °C";
+
+document.getElementById('hum').innerHTML =
+humValues.at(-1) + " %";
+
+document.getElementById('ldr').innerHTML =
+ldrValues.at(-1);
+
+document.getElementById('ultra').innerHTML =
+ultraValues.at(-1) + " cm";
+
+///////////////////////
+// CHART UPDATES
+///////////////////////
+
+dhtChart.data.labels = labels;
+dhtChart.data.datasets[0].data = tempValues;
+dhtChart.data.datasets[1].data = humValues;
+dhtChart.update();
+
+ldrChart.data.labels = labels;
+ldrChart.data.datasets[0].data = ldrValues;
+ldrChart.update();
+
+pirChart.data.labels = pir.map(row => row[1].slice(11, 19));
+pirChart.data.datasets[0].data = pirValues;
+pirChart.update();
+
+ultraChart.data.labels = labels;
+ultraChart.data.datasets[0].data = ultraValues;
+ultraChart.update();
+
+} catch (err) {
+console.log("Dashboard error:", err);
+}
+
+}
+
+loadDashboard();
+setInterval(loadDashboard, 2000);
+
+</script>
+
+{% endblock %}

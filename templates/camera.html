@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<link rel="stylesheet" href="/static/dashboard.css">
+<link rel="icon" href="/static/PHOTOS/hawk-eagle-logo-white-black_677805-1179.avif">
+
+
+<div class="navbar">📷 Live Surveillance</div>
+
+<div class="container">
+    <div class="card">
+        <img src="http://{{ cam_ip }}:81/stream" width="500" height="300" alt="camera stream">
+    </div>
+</div>
+
+
+
+{% endblock %}

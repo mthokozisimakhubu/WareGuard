@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width,initial-scale=1">
+
+<title>WARE GUARD Home</title>
+
+<link rel="stylesheet" href="/static/style.css">
+
+<style>
+
+body{
+
+margin:0;
+padding:0;
+
+height:100vh;
+
+background:
+linear-gradient(
+rgba(0,0,0,.6),
+rgba(0,0,0,.6)
+),
+
+url("/static/PHOTOS/warehouse.jpg");
+
+background-size:cover;
+
+background-position:center;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+font-family:Arial,sans-serif;
+
+}
+
+.box{
+
+width:700px;
+
+padding:50px;
+
+text-align:center;
+
+backdrop-filter:blur(20px);
+
+background:rgba(49,49,49,.2);
+
+border:1px solid rgba(255,255,255,.3);
+
+border-radius:10px;
+
+color:white;
+
+}
+
+h1{
+
+font-size:50px;
+
+margin-bottom:10px;
+
+}
+
+h2{
+
+color:#fcb860;
+
+}
+
+p{
+
+font-size:18px;
+
+line-height:1.7;
+
+}
+
+.buttons{
+
+margin-top:30px;
+
+}
+
+.btn{
+
+display:inline-block;
+
+padding:14px 35px;
+
+margin:10px;
+
+border-radius:8px;
+
+text-decoration:none;
+
+font-size:18px;
+
+font-weight:bold;
+
+transition:.3s;
+}
+
+.login{
+
+background:#fcb860;
+
+color:white;
+}
+
+.signup{
+
+background:#68c3ff;
+
+color:white;
+}
+
+.btn:hover{
+
+transform:scale(1.08);
+
+}
+
+.logo{
+
+width:120px;
+
+margin-bottom:20px;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="box">
+
+<img
+class="logo"
+src="/static/PHOTOS/hawk-eagle-logo-white-black_677805-1179.avif">
+
+
+<h1>WARE GUARD</h1>
+
+<h2>Smart Warehouse Monitoring System</h2>
+
+<p>
+
+Welcome to WareGuard.
+
+Monitor warehouse conditions,
+track inventory,
+detect motion,
+and manage environmental data
+in real time.
+
+</p>
+
+<div class="buttons">
+
+<a
+href="{{ url_for('login') }}"
+class="btn login">
+
+Login
+
+</a>
+
+
+<a
+href="{{ url_for('signup') }}"
+class="btn signup">
+
+Sign Up
+
+</a>
+
+</div>
+
+</div>
+
+</body>
+
+</html>
